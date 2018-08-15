@@ -80,4 +80,4 @@ theme: next
 deploy: 
   type: git
   repo: git@github.com:kenzung/kenzung.github.io.git
-  branch: branch/post
+  branch: master
