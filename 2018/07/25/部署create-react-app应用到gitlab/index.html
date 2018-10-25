@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hanz">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="gitlab CI,create-react-app," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="配置gitlab CI最近想把自己写的react程序（使用了eject后的create-reat-app）部署到网上，给自己的GitHub Project添加一个live demo。以前就听说过gitlab CI，这次就想在gitlab CI上折腾一下（主要免费，哈哈）。 首先，需要在项目的根目录上创建一个.gitlab-ci.yml 。gitlab CI的配置文件的配置项还是挺多的。具体可以看看">
+<meta name="keywords" content="gitlab CI,create-react-app">
+<meta property="og:type" content="article">
+<meta property="og:title" content="部署create-react-app应用到gitlab">
+<meta property="og:url" content="https://kenzung.github.io/2018/07/25/部署create-react-app应用到gitlab/index.html">
+<meta property="og:site_name" content="Ken Zung的个人博客">
+<meta property="og:description" content="配置gitlab CI最近想把自己写的react程序（使用了eject后的create-reat-app）部署到网上，给自己的GitHub Project添加一个live demo。以前就听说过gitlab CI，这次就想在gitlab CI上折腾一下（主要免费，哈哈）。 首先，需要在项目的根目录上创建一个.gitlab-ci.yml 。gitlab CI的配置文件的配置项还是挺多的。具体可以看看">
+<meta property="og:locale" content="zh-Hanz">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/6ec33160gy1ftmk8yxwbej20mr0i1aam.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/6ec33160gy1ftmjtntjeoj20fi05sgm5.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/6ec33160gy1ftn6nyjj4eg212q0rckaw.jpg">
+<meta property="og:updated_time" content="2018-07-26T05:34:30.752Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="部署create-react-app应用到gitlab">
+<meta name="twitter:description" content="配置gitlab CI最近想把自己写的react程序（使用了eject后的create-reat-app）部署到网上，给自己的GitHub Project添加一个live demo。以前就听说过gitlab CI，这次就想在gitlab CI上折腾一下（主要免费，哈哈）。 首先，需要在项目的根目录上创建一个.gitlab-ci.yml 。gitlab CI的配置文件的配置项还是挺多的。具体可以看看">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/6ec33160gy1ftmk8yxwbej20mr0i1aam.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://kenzung.github.io/2018/07/25/部署create-react-app应用到gitlab/"/>
+
+
+
+
+
+  <title>部署create-react-app应用到gitlab | Ken Zung的个人博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hanz">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ken Zung的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://kenzung.github.io/2018/07/25/部署create-react-app应用到gitlab/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Ken Zung">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ken Zung的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">部署create-react-app应用到gitlab</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-25T22:17:59+08:00">
+                2018-07-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="配置gitlab-CI"><a href="#配置gitlab-CI" class="headerlink" title="配置gitlab CI"></a>配置gitlab CI</h1><p>最近想把自己写的react程序（使用了eject后的create-reat-app）部署到网上，给自己的GitHub Project添加一个live demo。以前就听说过gitlab CI，这次就想在gitlab CI上折腾一下（主要免费，哈哈）。</p>
+<p>首先，需要在项目的根目录上创建一个<code>.gitlab-ci.yml</code> 。gitlab CI的配置文件的配置项还是挺多的。具体可以看看<a href="https://docs.gitlab.com/ee/ci/" target="_blank" rel="noopener">GitLab Docs</a>。</p>
+<p>这是我构建任务的yaml文件<br><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">image:</span> <span class="attr">node:8.9.4</span> <span class="comment">#docker镜像，node版本根据自己需要更改</span></span><br><span class="line"><span class="attr">before_script:</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">npm</span> <span class="string">install</span></span><br><span class="line"><span class="attr">pages:</span></span><br><span class="line"><span class="attr">  stage:</span> <span class="string">deploy</span></span><br><span class="line"><span class="attr">  cache:</span></span><br><span class="line"><span class="attr">    paths:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">node_modules</span> <span class="comment"># 缓存 node_modules</span></span><br><span class="line"><span class="attr">  script:</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">npm</span> <span class="string">run</span> <span class="string">build</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">rm</span> <span class="bullet">-rf</span> <span class="string">public</span> </span><br><span class="line"><span class="bullet">    -</span> <span class="string">mv</span> <span class="string">build</span> <span class="string">public</span></span><br><span class="line"><span class="attr">  artifacts:</span></span><br><span class="line"><span class="attr">    paths:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">public/</span></span><br><span class="line"><span class="attr">  only:</span></span><br><span class="line"><span class="bullet">    -</span> <span class="string">master</span></span><br></pre></td></tr></table></figure></p>
+<p>我在这里遇到的坑总结一下：</p>
+<ol>
+<li>这一点估计和该配置文件无关的。我的项目使用了eslint，执行eslint校验时提示warning，在gitlab ci上eslint的warning就会导致build fail。其实是gitlabCI把<code>process.env.CI</code>变量被设置为<code>true</code>，然后warning就会被当做error。</li>
+<li>部署静态页面，需要使用<code>pages</code>这个特定的任务名称，自己命名的jobs是不生效的。pages相当于gitlab提供了一个webserver来运行我们构建好的静态页面。静态内容必须放置<code>public/</code>目录，<code>artifacts:paths:</code>的值必须为<code>public/</code>。</li>
+<li>需要在<code>pages</code>任务下指定stage。</li>
+</ol>
+<h1 id="package-json和react-router配置"><a href="#package-json和react-router配置" class="headerlink" title="package.json和react router配置"></a>package.json和react router配置</h1><p>但是如果按照上述配置，构建虽然会成功。估计很大概率会得到下面这个<code>404</code>页面<br><img src="https://ws1.sinaimg.cn/large/6ec33160gy1ftmk8yxwbej20mr0i1aam.jpg" alt="404"></p>
+<h2 id="package-json配置"><a href="#package-json配置" class="headerlink" title="package.json配置"></a>package.json配置</h2><h3 id="首先需要设置一个homepage"><a href="#首先需要设置一个homepage" class="headerlink" title="首先需要设置一个homepage"></a>首先需要设置一个homepage</h3><p>为了兼容本地开发和CI编译，把<code>package.json</code>的<code>homepage</code>设置为<code>.</code>。设置这个可以让url路径变为相对路径。若没有设置，访问<code>kenzung.gitlab.io/dbp7</code>就会白屏，加载静态资源出错。这个好像争议挺多，具体可以看<a href="https://github.com/facebook/create-react-app/issues/1487" target="_blank" rel="noopener">StackOverflow issue1</a>和<a href="https://github.com/facebook/create-react-app/pull/1489" target="_blank" rel="noopener">StackOverflow issue2</a>。我暂时没有找到更好的解决方案。</p>
+<p><img src="https://ws1.sinaimg.cn/large/6ec33160gy1ftmjtntjeoj20fi05sgm5.jpg" alt="error"></p>
+<h3 id="设置构建脚本"><a href="#设置构建脚本" class="headerlink" title="设置构建脚本"></a>设置构建脚本</h3><p><code>package.json</code>文件<br><figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">  "scripts": &#123;</span><br><span class="line">    "start": "node scripts/start.js",</span><br><span class="line">    "build": "node scripts/build.js",</span><br><span class="line">    "test": "node scripts/test.js --env=jsdom",</span><br><span class="line"><span class="addition">+    "gitlab:build": "cross-env BASE_PATH=dbp7/ node scripts/build.js",</span></span><br><span class="line">    "storybook": "start-storybook -p 9001 -c .storybook"</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里使用了cross-env包。注入一个变量<code>BASE_PATH</code>，<code>BASE_PATH</code>的值是gitlab的项目名称。</p>
+<p><code>config/env.js</code>文件<br><figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">function getClientEnvironment(publicUrl) &#123;</span><br><span class="line">  const raw = Object.keys(process.env)</span><br><span class="line">    .filter(key =&gt; REACT_APP.test(key))</span><br><span class="line">    .reduce(</span><br><span class="line">      (env, key) =&gt; &#123;</span><br><span class="line">        env[key] = process.env[key];</span><br><span class="line">        return env;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        // Useful for determining whether we’re running in production mode.</span><br><span class="line">        // Most importantly, it switches React into the correct mode.</span><br><span class="line">        NODE_ENV: process.env.NODE_ENV || 'development',</span><br><span class="line">        // Useful for resolving the correct path to static assets in `public`.</span><br><span class="line">        // For example, &lt;img src=&#123;process.env.PUBLIC_URL + '/img/logo.png'&#125; /&gt;.</span><br><span class="line">        // This should only be used as an escape hatch. Normally you would put</span><br><span class="line">        // images into the `src` and `import` them in code to get their paths.</span><br><span class="line">        PUBLIC_URL: publicUrl,</span><br><span class="line"><span class="addition">+        BASE_PATH: process.env.BASE_PATH</span></span><br><span class="line">      &#125;</span><br><span class="line">    );</span><br><span class="line">    // Stringify all values so we can feed into Webpack DefinePlugin</span><br><span class="line">  const stringified = &#123;</span><br><span class="line">    'process.env': Object.keys(raw).reduce((env, key) =&gt; &#123;</span><br><span class="line">      env[key] = JSON.stringify(raw[key]);</span><br><span class="line">      return env;</span><br><span class="line">    &#125;, &#123;&#125;),</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  return &#123; raw, stringified &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在<code>env.js</code>中增加的这行代码是必须的，否则reduce函数的initvalue就少了<code>BASE_PATH</code>，导致<code>env</code>没有没有BASE_PATH。</p>
+<h2 id="react路由更改"><a href="#react路由更改" class="headerlink" title="react路由更改"></a>react路由更改</h2><p>经过测试，gitlab CI上使用BrowserRouter是可以，但是刷新页面会白屏。这个应该和<a href="https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#github-pages" target="_blank" rel="noopener">create-react-app官方文档</a>说的可能一致，应该是不支持<code>history API</code>导致的。使用<code>HashRouter</code>即可解决上述问题。<br><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> Router = process.env.BASE_PATH ? HashRouter : BrowserRouter;</span><br><span class="line"><span class="keyword">return</span> (</span><br><span class="line">    &lt;Router&gt;</span><br><span class="line">        &lt;React.Fragment&gt;</span><br><span class="line">            &lt;Switch&gt;</span><br><span class="line">                &lt;Route exact path=<span class="string">"/"</span> component=&#123;Home&#125; /&gt;</span><br><span class="line">                &lt;Route path=<span class="string">"/movie/celebrity/:id"</span> component=&#123;ActorDetail&#125;/&gt;</span><br><span class="line">                &lt;Route path=<span class="string">"/movie/subject/:id"</span> component=&#123;MovieDetail&#125;/&gt;</span><br><span class="line">                &lt;Route path=<span class="string">"/movie/:type"</span> component=&#123;MoreMovie&#125;/&gt;</span><br><span class="line">                &lt;Route path=<span class="string">"/movie"</span> component=&#123;Movie&#125; /&gt;</span><br><span class="line">                &lt;Route path=<span class="string">"/book"</span> component=&#123;Book&#125; /&gt;</span><br><span class="line">                &lt;Route path=<span class="string">"/event/:id"</span> component=&#123;EventDetail&#125;/&gt;</span><br><span class="line">                &lt;Route path=<span class="string">"/search"</span> component=&#123;Search&#125; /&gt;</span><br><span class="line">                &lt;Route component=&#123;NotFound&#125;/&gt;</span><br><span class="line">            &lt;<span class="regexp">/Switch&gt;</span></span><br><span class="line"><span class="regexp">        &lt;/</span>React.Fragment&gt;</span><br><span class="line">    &lt;<span class="regexp">/Router&gt;</span></span><br><span class="line"><span class="regexp">)</span></span><br></pre></td></tr></table></figure></p>
+<p>最后，由于我的程序含有<code>HTTP</code>和<code>HTTPS</code>的请求，gitlab是<code>HTTPS</code>的，这个mix请求会触发chrome浏览器报错</p>
+<pre><code>This request has been blocked; the content must be served over HTTPS.
+</code></pre><p>因此可以在html头部加上以下代码，意思是让http升级为不安全的https。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"Content-Security-Policy"</span> <span class="attr">content</span>=<span class="string">"upgrade-insecure-requests"</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>最后附上<a href="https://kenzung.gitlab.io/dbp7/" target="_blank" rel="noopener">live demo地址</a><br><img src="https://ws1.sinaimg.cn/large/6ec33160gy1ftn6nyjj4eg212q0rckaw.jpg" alt=""></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="https://itnext.io/so-you-want-to-host-your-single-age-react-app-on-github-pages-a826ab01e48" target="_blank" rel="noopener">So you want to host your Single Page React App on GitHub Pages?</a></li>
+<li><a href="https://gitivon.gitlab.io/blog/deploy-react-gitlab.html#gitlab-ci-yml-%E9%85%8D%E7%BD%AE" target="_blank" rel="noopener">将 create-react-app 项目部署到 gitlab-pages 上</a></li>
+<li><a href="https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#github-pages" target="_blank" rel="noopener">create-reate-app文档</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/gitlab-CI/" rel="tag"># gitlab CI</a>
+          
+            <a href="/tags/create-react-app/" rel="tag"># create-react-app</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/13/用airbnb的JavaScript规则来提高代码质量/" rel="prev" title="用airbnb的JavaScript规则来提高代码质量">
+                用airbnb的JavaScript规则来提高代码质量 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Ken Zung</p>
+              <p class="site-description motion-element" itemprop="description">见贤思齐</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#配置gitlab-CI"><span class="nav-number">1.</span> <span class="nav-text">配置gitlab CI</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#package-json和react-router配置"><span class="nav-number">2.</span> <span class="nav-text">package.json和react router配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#package-json配置"><span class="nav-number">2.1.</span> <span class="nav-text">package.json配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#首先需要设置一个homepage"><span class="nav-number">2.1.1.</span> <span class="nav-text">首先需要设置一个homepage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置构建脚本"><span class="nav-number">2.1.2.</span> <span class="nav-text">设置构建脚本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#react路由更改"><span class="nav-number">2.2.</span> <span class="nav-text">react路由更改</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ken Zung</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
